@@ -16,17 +16,17 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 
 
-app.get('/', 
+app.get('/',
 (req, res) => {
   res.render('index');
 });
 
-app.get('/create', 
+app.get('/create',
 (req, res) => {
   res.render('index');
 });
 
-app.get('/links', 
+app.get('/links',
 (req, res, next) => {
   models.Links.getAll()
     .then(links => {
@@ -37,7 +37,7 @@ app.get('/links',
     });
 });
 
-app.post('/links', 
+app.post('/links',
 (req, res, next) => {
   var url = req.body.url;
   if (!models.Links.isValidUrl(url)) {
@@ -77,8 +77,35 @@ app.post('/links',
 // Write your authentication routes here
 /************************************************************/
 
+app.post('/signup', (req, res, next) => {
+  //var params = [req.body.username, req.body.password];
+  var username = req.body.username;
+  var password = req.body.password;
+  return models.Users.create({username, password})
+    .then(result => {
+      res.redirect('/');
+    })
+    .catch(result => {
+      res.redirect('/signup');
+    });
+});
 
-
+app.post('/login', (req, res, next) => {
+  var attemptedPassword = req.body.password;
+  //var realPassWord = models.Users.get({});
+  var username = req.body.username;
+  return models.Users.get({username})
+    .then(results => {
+      if (models.Users.compare(attemptedPassword, results.password, results.salt)) {
+        res.redirect('/');
+      } else {
+        res.redirect('/login');
+      }
+      //console.log(results);
+    }).catch(results => {
+      res.redirect('/login');
+    });
+});
 /************************************************************/
 // Handle the code parameter route last - if all other routes fail
 // assume the route is a short code and try and handle it here.
