@@ -396,6 +396,7 @@ describe('', function() {
         });
       });
 
+
       it('assigns a session object to the request if a session already exists', function(done) {
 
         var requestWithoutCookie = httpMocks.createRequest();

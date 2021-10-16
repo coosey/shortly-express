@@ -8,15 +8,11 @@ const parseCookies = (req, res, next) => {
   var cookieArray = [];
   if (req.headers.cookie !== undefined) {
     cookieArray = req.headers.cookie.split('; ');
+    for (let i = 0; i < cookieArray.length; i++) {
+      var parsed = cookieArray[i].split('=');
+      cookies[parsed[0]] = parsed[1];
+    }
   }
-  //Iterate through cookieArray, split each element by '='
-  //Set first element to key, second element to value in cookies object
-  for (let i = 0; i < cookieArray.length; i++) {
-    var parsed = cookieArray[i].split('=');
-    cookies[parsed[0]] = parsed[1];
-  }
-  //console.log('our console: ', cookieArray);
-  //console.log('object: ', cookies);
   req.cookies = cookies;
   next();
 };
